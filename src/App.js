@@ -4,17 +4,23 @@ import Form from './components/Form'
 import TodoList from './components/ToDoList'
 
 function App() {
-
   //State
   const [inputText, setInputText] = useState('')
   const [todos, setTodos] = useState([])
   const [status, setStatus] = useState('all')
   //Functions
   const [filteredTodos, setFilteredTodos] = useState([])
+  //use effect run once
+  useEffect(() => {
+    getLocalTodos()
+  }, [])
+
   //use effect
   useEffect(() => {
-  filterHandler()
+    filterHandler()
+    saveLocalTodos()
   }, [todos, status])
+
   const filterHandler = () => {
     switch (status) {
       case 'completed':
@@ -26,6 +32,19 @@ function App() {
       default:
         setFilteredTodos(todos)
         break
+    }
+  }
+
+  const saveLocalTodos = () => {
+    localStorage.setItem('todos', JSON.stringify(todos))
+  }
+
+  const getLocalTodos = () => {
+    if (localStorage.getItem('todos') === null) {
+      localStorage.setItem('todos', JSON.stringify([]))
+    } else {
+    let todoLocal= JSON.parse( localStorage.getItem('todos'))
+    setTodos(todoLocal);
     }
   }
 
